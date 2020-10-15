@@ -1,48 +1,24 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  VaultTransfer as VaultTransferEvent,
-  VaultDeposit as VaultDepositEvent
-} from "../generated/Vault/Vault"
-import { Transfer as TransferEntity, Deposit as DepositEntity } from "../generated/schema"
+  Transfer as TransferEvent
+} from "../generated/Honey/ERC20"
+import { Transfer as TransferEntity } from "../generated/schema"
 
-export function handleVaultTransfer(event: VaultTransferEvent): void {
-  
-  let txHash = event.transaction.hash.toHex()
-  let origin = event.transaction.from.toHex()
-  let entity = TransferEntity.load(origin)
+const VAULT_ADDRESS = '0x05e42c4ae51ba28d8acf8c371009ad7138312ca4'
 
-  if (entity == null) {
-    entity = new TransferEntity(origin)
+export function handleTransfer(event: TransferEvent): void {
+  let source = event.params.from
+  let destination = event.params.to
 
-    entity.amount = BigInt.fromI32(0)
+  // We only care about the vault
+  if (source.toHex() !== VAULT_ADDRESS && destination.toHex() !== VAULT_ADDRESS) {
+    return
   }
 
-  entity.amount = event.params.amount
-
-  entity.token = event.params.token
-  entity.to = event.params.to
-  entity.txHash = txHash
-
+  let entity = new TransferEntity(`${event.transaction.hash}-${event.logIndex.toString()}`)
+  entity.amount = event.params.value
+  entity.source = source
+  entity.destination = destination
+  entity.txHash = event.transaction.hash
   entity.save()
-}
-
-export function handleVaultDeposit(event: VaultDepositEvent): void {
-  
-  let txHash = event.transaction.hash.toHex()
-  let origin = event.transaction.from.toHex()
-  let entity = DepositEntity.load(origin)
-  
-  if (entity == null) {
-    entity = new DepositEntity(origin)
-
-    entity.amount = BigInt.fromI32(0)
-  }
-
-  entity.amount = event.params.amount
-  entity.token = event.params.token
-  entity.from = event.params.sender
-  entity.txHash = txHash
-
-  entity.save()
-
 }

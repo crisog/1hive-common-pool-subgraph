@@ -3,25 +3,22 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Vault
+    name: Honey
     network: xdai
     source:
-      address: "0x05e42c4ae51ba28d8acf8c371009ad7138312ca4"
-      abi: Vault
+      address: "0x71850b7e9ee3f13ab46d67167341e4bdc905eef9"
+      abi: ERC20
       startBlock: 10648067
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - VaultTransfer
-        - VaultDeposit
+        - Transfer
       abis:
-        - name: Vault
-          file: ./abis/Vault.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
-        - event: VaultTransfer(indexed address,indexed address,uint256)
-          handler: handleVaultTransfer
-        - event: VaultDeposit(indexed address,indexed address,uint256)
-          handler: handleVaultDeposit
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
       file: ./src/mapping.ts
