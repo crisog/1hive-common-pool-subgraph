@@ -1,15 +1,7 @@
 type Transfer @entity {
   id: ID!
   amount: BigInt!
-  token: Bytes! # address
-  to: Bytes! # address
-  txHash: String!
-}
-
-type Deposit @entity {
-  id: ID!
-  amount: BigInt!
-  token: Bytes! # address
-  from: Bytes! # address
-  txHash: String!
+  source: Bytes! # address
+  destination: Bytes! # address
+  txHash: Bytes!
 }
