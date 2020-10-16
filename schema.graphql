@@ -3,5 +3,6 @@ type Transfer @entity {
   amount: BigInt!
   source: Bytes! # address
   destination: Bytes! # address
-  txHash: Bytes!
+  txHash: String!
+  timestamp: BigInt!
 }
